@@ -1,0 +1,65 @@
+// Variables
+
+$zLite: 0 1px 1.5px 1px rgba(0,0,0,.12);
+$zFlow: 0px 3px 10px rgba(192, 192, 192, 0.6);
+
+$red: rgb(237, 76, 64);
+$lightGreen: rgba(81, 187, 141, 1);
+
+// Shared Styles
+
+button, .btn {
+  cursor: pointer;
+}
+
+hr {
+  margin-top: 1.3rem;
+  margin-bottom: 2rem;
+  border-width: 0;
+  border-top: 1px solid #E1E1E1;
+  max-width: 360px;
+}
+
+input.form-control {
+  width: 100%;
+  max-width: 280px;
+  margin: 0 auto;
+
+  box-shadow: $zLite;
+  border: 0;
+}
+
+input::placeholder {
+  color: #b1b1b1;
+  font-family: Roboto;
+}
+
+.btn {
+  color: #555;
+  background: white;
+  font-family: Roboto;
+  box-shadow: $zLite;
+}
+
+.btn-light {
+  color: #efefef;
+  background: $lightGreen;
+
+  &:focus, &:active, &:hover {
+    background: white;
+    background: darken($lightGreen, 5%);
+  }
+}
+
+.btn:focus, .btn:active, .btn:hover {
+  box-shadow: $zFlow;
+}
+
+.form-control:focus, .form-control:active {
+  box-shadow: $zFlow;
+  border-bottom: 2px solid $lightGreen;
+}
+
+.btn.b1 {
+  margin-right: 1em;
+}
