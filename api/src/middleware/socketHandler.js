@@ -3,12 +3,7 @@
 export default io => {
   try {
     io.on("connection", socket => {
-      console.info("Client Joined...")
-
-      socket.on("joinRoom", ({room, name}) => {
-        socket.join(room)
-        console.info(`Client ${name} joined the room ${room}`)
-      })
+      console.info("Client Joined.")
     })
     io.use((socket, next) => {
       // Everything in socket.feathers will be available in hook.params

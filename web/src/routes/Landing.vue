@@ -42,11 +42,9 @@
     }),
     methods: {
       newGame() {
-        const playerName = this.playerName
         enterGame(this)
 
-        api.service("game").create({playerName}).then(room => {
-          api.io.emit("joinRoom", {room: room.id, name: playerName})
+        api.service("game").create({name: this.playerName}).then(room => {
           this.$store.commit("enterRoom", room)
           this.$router.push(`/${room.id}`)
         })
@@ -54,9 +52,10 @@
       joinGame() {
         enterGame(this)
 
-        api.io.emit("joinRoom", {room: this.code, name: this.playerName})
-        this.$store.commit("enterRoom", {id: this.code, players: [this.playerName]})
-        this.$router.push(`/${this.code}`)
+        api.service("game").patch(this.code, {name: this.playerName}).then(room => {
+          this.$store.commit("enterRoom", room)
+          this.$router.push(`/${this.code}`)
+        })
       }
     }
   }

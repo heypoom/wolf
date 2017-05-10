@@ -19,7 +19,7 @@
 
       hr
       .players
-        p(v-for="(player, index) in room.players") <b>{{index + 1}}</b> &nbsp;&nbsp; {{player}}
+        p(v-for="player in room.players") <b>{{player.id}}</b> &nbsp;&nbsp; {{player.name}}
       hr
 
       button.btn.b1.btn-light(@click="start") Start Game
@@ -37,6 +37,9 @@
         this.$store.commit("addPlayers", name)
       })
     },
+    data: () => ({
+      newName: ""
+    }),
     props: ["code"],
     computed: mapState(["playerName", "room"]),
     methods: {
@@ -47,9 +50,9 @@
       join() {
         // TODO: Join the Game
         this.$store.commit("setName", this.newName)
-        this.$store.commit("enterRoom", {
-          id: this.code,
-          players: [this.playerName]
+
+        api.service("game").patch(this.code, {name: this.newName}).then(room => {
+          this.$store.commit("enterRoom", room)
         })
       },
       leave() {
