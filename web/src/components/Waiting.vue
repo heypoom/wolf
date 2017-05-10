@@ -32,11 +32,6 @@
 
   export default {
     name: "wolf-wait",
-    mounted() {
-      api.io.on(`room-${this.code}`, ({name}) => {
-        this.$store.commit("addPlayers", name)
-      })
-    },
     data: () => ({
       newName: ""
     }),
@@ -51,13 +46,22 @@
         // TODO: Join the Game
         this.$store.commit("setName", this.newName)
 
-        api.service("game").patch(this.code, {name: this.newName}).then(room => {
+        api.service("room").patch(this.code, {name: this.newName}).then(room => {
           this.$store.commit("enterRoom", room)
         })
       },
       leave() {
         // TODO: Destroy Room
         this.$router.push("/")
+      }
+    },
+    feathers: {
+      room: {
+        patched(data) {
+          if (data.players) {
+            this.$store.commit("updatePlayers", data.players)
+          }
+        }
       }
     }
   }

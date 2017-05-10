@@ -1,7 +1,7 @@
-import game from "./game"
+import room from "./room"
 import debug from "./debug"
 
 export default function services() {
-  this.configure(game)
+  this.configure(room)
   this.configure(debug)
 }

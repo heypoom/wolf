@@ -44,7 +44,7 @@
       newGame() {
         enterGame(this)
 
-        api.service("game").create({name: this.playerName}).then(room => {
+        api.service("room").create({name: this.playerName}).then(room => {
           this.$store.commit("enterRoom", room)
           this.$router.push(`/${room.id}`)
         })
@@ -52,7 +52,7 @@
       joinGame() {
         enterGame(this)
 
-        api.service("game").patch(this.code, {name: this.playerName}).then(room => {
+        api.service("room").patch(this.code, {name: this.playerName}).then(room => {
           this.$store.commit("enterRoom", room)
           this.$router.push(`/${this.code}`)
         })

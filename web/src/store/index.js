@@ -22,11 +22,8 @@ const store = new Vuex.Store({
     toggleWait(state, value) {
       state.isWaiting = value || !state.isWaiting
     },
-    addPlayers(state, player) {
-      state.room = {
-        ...state.room,
-        players: [...state.room.players, player]
-      }
+    updatePlayers(state, players) {
+      state.room = {...state.room, players}
     }
   }
 })
