@@ -6,7 +6,25 @@
 
 <script>
   export default {
-    name: "app"
+    name: "app",
+    feathers: {
+      room: {
+        patched(data) {
+          if (data.players) {
+            this.$store.commit("updatePlayers", data.players)
+          }
+        }
+      },
+      game: {
+        created(data) {
+          if (data.players) {
+            console.log("Game is starting...")
+            this.$store.commit("updatePlayers", data.players)
+            this.$store.commit("toggleWait", false)
+          }
+        }
+      }
+    }
   }
 </script>
 

@@ -19,7 +19,7 @@
 
       hr
       .players
-        p(v-for="player in room.players") <b>{{player.id}}</b> &nbsp;&nbsp; {{player.name}}
+        p(v-for="(player, index) in room.players") <b>{{index + 1}}</b> &nbsp;&nbsp; {{player.name}}
       hr
 
       button.btn.b1.btn-light(@click="start") Start Game
@@ -40,28 +40,26 @@
     methods: {
       start() {
         // TODO: Start Game!
-        this.$store.commit("toggleWait")
+        const roles = {
+          werewolf: 1
+        }
+
+        api.service("game").create({room: this.code, roles}).then(room => {
+          this.$store.commit("updatePlayers", room.players)
+          // this.$store.commit("toggleWait", false)
+        })
       },
       join() {
         // TODO: Join the Game
         this.$store.commit("setName", this.newName)
 
         api.service("room").patch(this.code, {name: this.newName}).then(room => {
-          this.$store.commit("enterRoom", room)
+          this.$store.commit("updateRoom", room)
         })
       },
       leave() {
         // TODO: Destroy Room
         this.$router.push("/")
-      }
-    },
-    feathers: {
-      room: {
-        patched(data) {
-          if (data.players) {
-            this.$store.commit("updatePlayers", data.players)
-          }
-        }
       }
     }
   }

@@ -5,7 +5,8 @@ export const Player = sequelize.define("player", {
   name: {
     type: Sequelize.STRING,
     allowNull: false
-  }
+  },
+  role: Sequelize.STRING
 })
 
 export const Room = sequelize.define("room", {
@@ -20,6 +21,6 @@ export const Room = sequelize.define("room", {
 Room.hasMany(Player, {as: "players"})
 Player.belongsTo(Room, {onDelete: "cascade"})
 
-Room.beforeValidate(game => {
-  game.id = Math.random().toString(36).substring(2, 8)
+Room.beforeValidate(room => {
+  room.id = Math.random().toString(36).substring(2, 8)
 })

@@ -12,15 +12,19 @@ const store = new Vuex.Store({
     playerName: null,
     isWaiting: true
   },
+  getters: {
+    player: state => state.room.players.find(p => p.name === state.playerName),
+    role: state => state.room.players.find(p => p.name === state.playerName).role
+  },
   mutations: {
     setName(state, name) {
       state.playerName = name
     },
-    enterRoom(state, room) {
+    updateRoom(state, room) {
       state.room = room
     },
-    toggleWait(state, value) {
-      state.isWaiting = value || !state.isWaiting
+    toggleWait(state, value = !state.isWaiting) {
+      state.isWaiting = value
     },
     updatePlayers(state, players) {
       state.room = {...state.room, players}

@@ -2,29 +2,37 @@
   .container
     wolf-wait(v-if="isWaiting" :code="$route.params.room")
     section.gameplay(v-else)
+      wolf-role(:role="role")
       .z1
         .players
-          p Players:
-          span(v-for="player in room.players") {{player}}&nbsp;
+          span(v-for="player in room.players") {{player.name}}&nbsp;
       .leave
         button.btn.b1(@click="leave") Leave Game
         button.btn.b1(@click="end") End Game
 </template>
 
 <script>
-  import {mapState} from "vuex"
+  import {mapState, mapGetters} from "vuex"
+
   import Waiting from "../components/Waiting"
+  import Role from "../components/Role"
+  // import api from "../api"
 
   function exitGame(self) {
     if (confirm("Are you sure you want to Force Quit?")) {
       self.$store.commit("toggleWait", true)
       self.$router.push("/")
+
+      // api.service("game").remove(this.code)
     }
   }
 
   export default {
     name: "wolf-game",
-    computed: mapState(["isWaiting", "room"]),
+    computed: {
+      ...mapState(["isWaiting", "room"]),
+      ...mapGetters(["role"])
+    },
     methods: {
       leave() {
         // TODO: Remove Player from Game
@@ -36,7 +44,8 @@
       }
     },
     components: {
-      "wolf-wait": Waiting
+      "wolf-wait": Waiting,
+      "wolf-role": Role
     }
   }
 </script>
@@ -55,15 +64,6 @@
 
   .leave {
     text-align: center;
-    margin-top: 2em;
-  }
-
-  .z1 {
-    // text-align: center;
-    padding: 1.5em 2em;
-
-    background: white;
-    box-shadow: $zLite;
-    border-bottom: 2px solid $lightGreen;
+    margin-top: 1.5em;
   }
 </style>

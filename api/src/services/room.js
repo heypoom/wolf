@@ -4,7 +4,7 @@ import {Room, Player} from "../models/room"
 class RoomService {
   // Create a room
   async create({name = "Player 1"}) {
-    await db.sync({force: true})
+    await db.sync()
 
     const room = await Room.create({})
     const player = await Player.create({name})
@@ -29,7 +29,7 @@ class RoomService {
 }
 
 export default function () {
-  Room.sync({force: true})
+  Room.sync()
 
   this.use("room", new RoomService({
     Model: Room,
