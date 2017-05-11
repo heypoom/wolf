@@ -53,7 +53,7 @@
     background: #f8f8f8;
     font-size: 0.8em;
     padding: 0.2em 0.8em;
-    color: #555;
+    color: #888;
   }
 
   .roleIcon {
