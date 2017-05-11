@@ -1,7 +1,8 @@
 <template lang="pug">
   .z1
-    .show(v-show="showRole" @click="showRole = false")
-      .roleIcon(:class="role")
+    .tapLabel(@click="showRole = !showRole") Tap icon to {{showRole ? "hide" : "show"}}
+    .show(v-show="showRole")
+      .roleIcon(:class="role" @click="showRole = false")
       h1 You are the {{role}}!
       h2 {{roleDesc}}
     .hide(v-show="!showRole")
@@ -10,6 +11,12 @@
 </template>
 
 <script>
+  const roleDesc = {
+    werewolf: "Eat a villager each night. Don't let them know.",
+    villager: "Find the werewolves and lynch them.",
+    seer: "Each night, point at a player and learn if they are on the villager or the werewolf team."
+  }
+
   export default {
     name: "wolf-role",
     props: ["role"],
@@ -18,10 +25,7 @@
     }),
     computed: {
       roleDesc() {
-        if (this.role === "werewolf") {
-          return "Eat a villager each night. Don't let them know."
-        }
-        return "Find the werewolves and lynch them."
+        return roleDesc[this.role] || roleDesc.villager
       }
     }
   }
@@ -31,6 +35,7 @@
   @import "../variables.scss";
 
   .z1 {
+    position: relative;
     text-align: center;
     padding: 2em;
   }
@@ -38,6 +43,17 @@
   h1 {
     font-size: 1.7em;
     color: #888;
+  }
+
+  .tapLabel {
+    position: absolute;
+    top: 0;
+    right: 0;
+    text-transform: uppercase;
+    background: #f8f8f8;
+    font-size: 0.8em;
+    padding: 0.2em 0.8em;
+    color: #555;
   }
 
   .roleIcon {
@@ -63,7 +79,12 @@
 
   .roleIcon.villager {
     background-image: url("../assets/villa.png");
+  }
 
+  .roleIcon.seer {
+    // background-image: url("../assets/seer.png");
+    background-image: url("../assets/wolf-seer.jpg");
+    background-size: 3.7em;
   }
 
   .tapIcon {

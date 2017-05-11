@@ -12,13 +12,7 @@
         )
       button.btn.b1.btn-light(@click="newGame" key="create") Create
       button.btn(@click="vNew = false") Back
-    form(v-else-if="vJoin" @submit.prevent.once="joinGame")
-      .form-group.row
-        input.col-12.form-control(v-model="code" placeholder="Enter the Village Code")
-      .form-group.row
-        input.col-12.form-control(v-model="playerName" placeholder="Enter Your Name")
-      input.btn.b1.btn-light(type="submit" @click="joinGame" value="Join")
-      .btn(@click="vJoin = false") Back
+    wolf-join(:code="code" :back="back" front v-else-if="vJoin")
     div(v-else)
       button.btn.b1.btn-light(@click="vNew = !vNew") New Village
       button.btn(@click="vJoin = !vJoin") Join Village
@@ -26,6 +20,7 @@
 
 <script>
   import api from "../api"
+  import Join from "../components/Join"
 
   function enterGame(self) {
     self.$store.commit("setName", self.playerName)
@@ -41,6 +36,9 @@
       vJoin: false
     }),
     methods: {
+      back() {
+        this.vJoin = false
+      },
       newGame() {
         enterGame(this)
 
@@ -55,8 +53,14 @@
         api.service("room").patch(this.code, {name: this.playerName}).then(room => {
           this.$store.commit("updateRoom", room)
           this.$router.push(`/${this.code}`)
+        }).catch(err => {
+          console.error(err.message)
+          this.joinError = err.message
         })
       }
+    },
+    components: {
+      "wolf-join": Join
     }
   }
 </script>

@@ -1,18 +1,7 @@
 <template lang="pug">
-  div
-    section.waiting(v-if="!playerName")
-      img.torch(src="../assets/shaker.svg")
-      h1 Welcome to Werewolf Village!
-      h2 Please, enter your name to join <b>{{code}}</b>.
-      br
-      .form-group.row
-        input.col-12.form-control(
-          @keyup.enter="join"
-          v-model="newName"
-          placeholder="Enter Your Name"
-        )
-      button.btn.b1.btn-light(@click="join") Join
-    section.waiting(v-else)
+  section.waiting
+    wolf-join(v-if="!playerName" :code="code")
+    template(v-else)
       img.torch(src="../assets/shaker.svg")
       h1 Waiting for Players...
       h2 Village Code: <b class="code">{{code}}</b>
@@ -30,18 +19,18 @@
   import {mapState} from "vuex"
   import api from "../api"
 
+  import Join from "./Join"
+
   export default {
     name: "wolf-wait",
-    data: () => ({
-      newName: ""
-    }),
     props: ["code"],
     computed: mapState(["playerName", "room"]),
     methods: {
       start() {
         // TODO: Start Game!
         const roles = {
-          werewolf: 1
+          werewolf: 1,
+          seer: 1
         }
 
         api.service("game").create({room: this.code, roles}).then(room => {
@@ -49,18 +38,13 @@
           // this.$store.commit("toggleWait", false)
         })
       },
-      join() {
-        // TODO: Join the Game
-        this.$store.commit("setName", this.newName)
-
-        api.service("room").patch(this.code, {name: this.newName}).then(room => {
-          this.$store.commit("updateRoom", room)
-        })
-      },
       leave() {
         // TODO: Destroy Room
         this.$router.push("/")
       }
+    },
+    components: {
+      "wolf-join": Join
     }
   }
 </script>

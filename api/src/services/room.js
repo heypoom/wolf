@@ -20,6 +20,10 @@ class RoomService {
   // Join a room
   async patch(id, {name}) {
     const room = await Room.findOne({where: {id}})
+    if (!room) {
+      throw new Error("Nonexistent Room.")
+    }
+
     await room.addPlayers(await Player.create({name}))
 
     return Promise.resolve({
