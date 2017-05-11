@@ -43,6 +43,7 @@
         enterGame(this)
 
         api.service("room").create({name: this.playerName}).then(room => {
+          this.$store.commit("toggleHost", true)
           this.$store.commit("updateRoom", room)
           this.$router.push(`/${room.id}`)
         })

@@ -9,8 +9,10 @@ const store = new Vuex.Store({
       id: "",
       players: []
     },
+    roles: {},
     playerName: null,
-    isWaiting: true
+    isWaiting: true,
+    isHost: false
   },
   getters: {
     player: state => state.room.players.find(p => p.name === state.playerName),
@@ -28,6 +30,12 @@ const store = new Vuex.Store({
     },
     updatePlayers(state, players) {
       state.room = {...state.room, players}
+    },
+    toggleHost(state, value = !state.isHost) {
+      state.isHost = value
+    },
+    setRoles(state, roles) {
+      state.roles = roles
     }
   }
 })

@@ -11,17 +11,14 @@
 </template>
 
 <script>
-  const roleDesc = {
-    werewolf: "Eat a villager each night. Don't let them know.",
-    villager: "Find the werewolves and lynch them.",
-    seer: "Each night, point at a player and learn if they are on the villager or the werewolf team."
-  }
+  import roleDesc from "../api/roles"
 
   export default {
     name: "wolf-role",
     props: ["role"],
     data: () => ({
-      showRole: false
+      showRole: false,
+      roles: roleDesc
     }),
     computed: {
       roleDesc() {
