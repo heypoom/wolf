@@ -7,7 +7,7 @@
     form(@submit.prevent.once="join")
       .form-group.row(:class="{'has-danger': joinError}" v-if="front")
         .col-12
-          input.form-control(:class="fErr" v-model="code" placeholder="Enter the Village Code")
+          input.form-control(:class="fErr" v-model="joinCode" placeholder="Enter the Village Code")
           .form-control-feedback(v-if="joinError") {{joinError}}
       .form-group.row(:class="{'has-danger': joinError}")
         .col-12
@@ -25,6 +25,7 @@
     props: ["code", "front", "back"],
     data: () => ({
       newName: "",
+      joinCode: "",
       joinError: false
     }),
     computed: {
@@ -34,9 +35,14 @@
     },
     methods: {
       join() {
-        api.service("room").patch(this.code, {name: this.newName}).then(room => {
+        const code = this.front ? this.joinCode : this.code
+
+        api.service("room").patch(code, {name: this.newName}).then(room => {
           this.$store.commit("setName", this.newName)
           this.$store.commit("updateRoom", room)
+          if (this.front) {
+            this.$router.push(`/${this.code}`)
+          }
         }).catch(err => {
           console.error(err.message)
           this.joinError = err.message

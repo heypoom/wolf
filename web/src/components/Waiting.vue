@@ -31,22 +31,21 @@
     methods: {
       start() {
         // TODO: Start Game!
-        const roles = {
-          werewolf: 1,
-          seer: 1
-        }
+        const roles = this.roles || {werewolf: 1, seer: 1}
+        Object.keys(roles).forEach(key => (roles[key] == null) && delete roles[key])
 
-        api.service("game").create({
-          room: this.code,
-          roles: this.roles || roles
-        }).then(room => {
+        api.service("game").create({room: this.code, roles}).then(room => {
           this.$store.commit("updatePlayers", room.players)
           // this.$store.commit("toggleWait", false)
         })
       },
       leave() {
-        // TODO: Destroy Room
-        this.$router.push("/")
+        if (confirm("Are you sure you want to quit?")) {
+          // TODO: Destroy Room
+          this.$store.commit("toggleWait", true)
+          this.$store.commit("updateRoom", null)
+          this.$router.push("/")
+        }
       }
     },
     components: {

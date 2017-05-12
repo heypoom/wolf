@@ -24,6 +24,7 @@
 
   function enterGame(self) {
     self.$store.commit("setName", self.playerName)
+    self.$store.commit("setRoles", {})
     self.$store.commit("toggleWait", true)
   }
 

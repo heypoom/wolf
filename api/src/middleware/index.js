@@ -4,13 +4,11 @@ import rest from "feathers-rest"
 import socketio from "feathers-socketio"
 import errorHandler from "feathers-errors/handler"
 
-import io from "socket.io"
-import uws from "uws"
-
 import cors from "cors"
 import path from "path"
 import cookieParser from "cookie-parser"
 import bodyParser from "body-parser"
+import timesync from "timesync/server"
 
 import socketHandler from "./socketHandler"
 
@@ -25,5 +23,6 @@ export default function middlewares() {
   this.configure(rest())
   this.configure(socketio({wsEngine: "uws"}, socketHandler))
 
+  this.use("/timesync", timesync.requestHandler)
   this.use(errorHandler())
 }

@@ -1,4 +1,9 @@
-import {Room, Player} from "../models/room"
+import {Room} from "../models/room"
+
+/* eslint no-await-in-loop: 0 */
+/* eslint no-restricted-syntax: 0 */
+/* eslint arrow-body-style: 0 */
+/* eslint guard-for-in: 0 */
 
 const defaultRole = {
   doctor: 1,
@@ -19,6 +24,15 @@ function shuffleArr(array) {
   }
 }
 
+function getTime(ms) {
+  let seconds = ms / 1000
+  const hours = parseInt(seconds / 3600, 10)
+  seconds %= 3600
+  const minutes = parseInt(seconds / 60, 10)
+  seconds %= 60
+  return `${hours ? `${hours}:` : ""}${minutes}:${seconds < 10 ? "0" : ""}${Math.floor(seconds)}`
+}
+
 // Randomize Roles (requirement, player count)
 const randomizeRoles = (req = defaultRole, players) => {
   // Get the Crucial (Non-Villager) Roles
@@ -35,7 +49,46 @@ const randomizeRoles = (req = defaultRole, players) => {
 }
 
 class GameService {
-  create = async ({room: id, roles: req}) => {
+  timer(room, sec) {
+    return new Promise(resolve => {
+      const duration = sec * 1000
+
+      // Sync with Client
+      this.update(room, {type: "clock", payload: duration})
+
+      // Actual Server Clock
+      const initial = Date.now()
+
+      const interval = setInterval(() => {
+        const now = Date.now() - initial
+
+        if (now < duration) {
+          console.log(`Countdown: ${getTime(duration - now)}`)
+        } else {
+          clearInterval(interval)
+          resolve()
+        }
+      }, 1000)
+    })
+  }
+
+  // Game Loop
+  async start(id) {
+    console.log("Daytime Start")
+
+    await this.timer(id, 15)
+
+    console.log("Daytime End")
+
+    return true
+  }
+
+  find = query => Promise.resolve({
+    status: "Game Service",
+    query
+  })
+
+  async create({room: id, roles: req}) {
     // Consistency Checks
     if (typeof req !== "object" || Array.isArray(req)) {
       throw new Error("Role Requirement must be an Object.")
@@ -54,19 +107,32 @@ class GameService {
       await players[i].update({role: roles[i]})
     }
 
-    // TODO: Initiate Game
+    // Start the Game
+    this.start(id)
 
-    // Return Information
-    // .map(x => ({id: x.id, name: x.name, role: x.role}))
     return Promise.resolve({
-      status: `Game is starting...`,
       players: await room.getPlayers().map(x => x.get({plain: true}))
     })
   }
 
-  find = () => Promise.resolve({
-    status: "Game Service"
-  })
+  async patch(room, {type, payload}) {
+    const roleAction = {}
+    if (type === "VOTEKILL") {
+      // do sth
+    } else if (type === "CONFIRMKILL") {
+      // do sth
+    } else if (type === "WOLFKILL") {
+      // do something
+    } else if (roleAction[type]) {
+      // commit action
+    }
+    return Promise.resolve({
+      status: "OK"
+    })
+  }
+
+  // Event Handler
+  update = (room, {type, payload}) => Promise.resolve({room, type, payload})
 }
 
 export default function () {
