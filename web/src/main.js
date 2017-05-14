@@ -1,14 +1,16 @@
 import Vue from "vue"
-import vueFeathers from "vue-feathers"
+import VueFeathers from "vue-feathers"
+import VueTouch from "vue-touch"
 
 import App from "./components/App"
 import router from "./routes"
 import store from "./store"
-import api from "./api"
+import api from "./core/api"
 
 Vue.config.productionTip = false
 
-Vue.use(vueFeathers, api)
+Vue.use(VueTouch)
+Vue.use(VueFeathers, api)
 
 window.api = api
 

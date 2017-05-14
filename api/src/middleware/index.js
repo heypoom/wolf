@@ -8,9 +8,10 @@ import cors from "cors"
 import path from "path"
 import cookieParser from "cookie-parser"
 import bodyParser from "body-parser"
-import timesync from "timesync/server"
+import {requestHandler} from "timesync/server"
 
-import socketHandler from "./socketHandler"
+import logger from "./logger"
+import socket from "./socket"
 
 export default function middlewares() {
   this.use(feathers.static(path.join(__dirname, "public")))
@@ -21,8 +22,9 @@ export default function middlewares() {
 
   this.configure(hooks())
   this.configure(rest())
-  this.configure(socketio({wsEngine: "uws"}, socketHandler))
+  this.configure(socketio({wsEngine: "uws"}, socket))
 
-  this.use("/timesync", timesync.requestHandler)
+  this.use("/timesync", requestHandler)
+  this.use(logger())
   this.use(errorHandler())
 }

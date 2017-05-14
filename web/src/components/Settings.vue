@@ -10,7 +10,7 @@
 </template>
 
 <script>
-  import allRoles from "../api/roles"
+  import allRoles from "../core/roles"
 
   export default {
     name: "wolf-settings",

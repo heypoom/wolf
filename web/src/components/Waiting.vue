@@ -8,18 +8,19 @@
         h2 Village Code: <b class="code">{{code}}</b>
 
         hr
-        .players
+        .players(v-if="room.players")
           p(v-for="(player, index) in room.players") <b>{{index + 1}}</b> &nbsp;&nbsp; {{player.name}}
         hr
 
-        button.btn.b1.btn-light(:class="{disabled: !isHost}" @click="start") {{isHost ? "Start Game" : "Please Wait..."}}
+        button.btn.b1.btn-light(:disabled="!isHost" @click="start") {{isHost ? "Start Game" : "Please Wait..."}}
         button.btn(@click="leave") Leave Game
     wolf-settings(:room="room" v-if="isHost")
+    .pad(v-if="!isHost")
 </template>
 
 <script>
   import {mapState} from "vuex"
-  import api from "../api"
+  import api from "../core/api"
 
   import Join from "./Join"
   import Settings from "./Settings"
@@ -30,20 +31,16 @@
     computed: mapState(["playerName", "room", "isHost", "roles"]),
     methods: {
       start() {
-        // TODO: Start Game!
         const roles = this.roles || {werewolf: 1, seer: 1}
-        Object.keys(roles).forEach(key => (roles[key] == null) && delete roles[key])
+        Object.keys(roles).forEach(key => (roles[key] === 0) && delete roles[key])
 
-        api.service("game").create({room: this.code, roles}).then(room => {
-          this.$store.commit("updatePlayers", room.players)
-          // this.$store.commit("toggleWait", false)
-        })
+        api.service("game").create({room: this.code, roles})
       },
       leave() {
         if (confirm("Are you sure you want to quit?")) {
           // TODO: Destroy Room
           this.$store.commit("toggleWait", true)
-          this.$store.commit("updateRoom", null)
+          this.$store.commit("updateRoom", {})
           this.$router.push("/")
         }
       }
@@ -73,7 +70,7 @@
     height: 6em;
     padding: 1em;
     background: white;
-    border: 2px solid $lightGreen;
+    border: 2px solid $primary;
     border-radius: 50%;
     margin-bottom: 2em;
     box-shadow: $zFlow;
@@ -97,5 +94,9 @@
   .code {
     font-family: "Courier New", Courier, "Lucida Sans Typewriter", "Lucida Typewriter", monospace;
     // text-transform: uppercase;
+  }
+
+  .pad {
+    margin-top: 2em;
   }
 </style>

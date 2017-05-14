@@ -3,8 +3,15 @@
 $zLite: 0 1px 1.5px 1px rgba(0,0,0,.12);
 $zFlow: 0px 3px 10px rgba(192, 192, 192, 0.6);
 
+$blue: #3498db;
 $red: rgb(237, 76, 64);
+$grey: #607D8B;
 $lightGreen: rgba(81, 187, 141, 1);
+$darkGreen: #4caf50;
+$orange: #FF9800;
+$darkOrange: #ff5722;
+
+$primary: $lightGreen;
 
 // Shared Styles
 
@@ -34,14 +41,26 @@ input::placeholder {
   font-family: Roboto;
 }
 
+.tapLabel {
+  position: absolute;
+  top: 0;
+  right: 0;
+  text-transform: uppercase;
+  background: #f8f8f8;
+  font-size: 0.8em;
+  padding: 0.2em 0.8em;
+  color: #888;
+}
+
 .z1 {
+  position: relative;
   // text-align: center;
   padding: 1.5em 2em;
   margin-bottom: 1.5em;
 
   background: white;
   box-shadow: $zLite;
-  border-bottom: 2px solid $lightGreen;
+  border-bottom: 2px solid $primary;
 }
 
 .btn {
@@ -53,11 +72,11 @@ input::placeholder {
 
 .btn-light {
   color: #efefef;
-  background: $lightGreen;
+  background: $primary;
 
   &:focus, &:active, &:hover {
     background: white;
-    background: darken($lightGreen, 5%);
+    background: darken($primary, 5%);
   }
 }
 
@@ -67,7 +86,7 @@ input::placeholder {
 
 .form-control:focus, .form-control:active {
   box-shadow: $zFlow;
-  border-bottom: 2px solid $lightGreen;
+  border-bottom: 2px solid $primary;
 }
 
 .btn.b1 {

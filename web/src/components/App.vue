@@ -5,22 +5,42 @@
 </template>
 
 <script>
+  import {ts} from "../core"
+
   export default {
     name: "app",
     feathers: {
       room: {
-        patched(data) {
+        patched(data = {}) {
           if (data.players) {
             this.$store.commit("updatePlayers", data.players)
           }
         }
       },
       game: {
-        created(data) {
-          if (data.players) {
-            console.log("Game is starting...")
-            this.$store.commit("updatePlayers", data.players)
-            this.$store.commit("toggleWait", false)
+        created(data = {}) {
+          console.log("Game is starting...")
+          this.$store.commit("updateRoom", data)
+          this.$store.commit("toggleWait", false)
+        },
+        updated({type, data}) {
+          switch (type) {
+            case "clock":
+              this.$store.commit("updateTimer", {
+                duration: data,
+                initial: ts.now()
+              })
+              break
+            case "night":
+              console.info("The night sky fell...")
+              this.$store.commit("toggleNight", true)
+              break
+            case "day":
+              console.info("It's the new day!")
+              this.$store.commit("toggleNight", false)
+              break
+            default:
+              break
           }
         }
       }
@@ -37,6 +57,10 @@
 
     color: #555;
     background: #f8f8f8;
+  }
+
+  main {
+    overflow-x: hidden;
   }
 
   h1, h2, h3, h4, h5, h6 {

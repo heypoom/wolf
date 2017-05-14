@@ -1,72 +1,31 @@
 <template lang="pug">
-  .z1
-    h1 {{time}} {{down}}
+  .z1.clock(:class="{'night': night}")
+    .tapLabel Clock Cycle
+    span.large {{down}}
+    span.sm(:class="{'day': !night}") {{night ? "NIGHT" : "DAY"}}TIME
 </template>
 
 <script>
-  import {endpointAlt} from "../api"
-
-  const timesync = require("timesync/lib/timesync.js")
-
-  function getTime(ms) {
-    let seconds = ms / 1000
-    const hours = parseInt(seconds / 3600, 10)
-    seconds %= 3600
-    const minutes = parseInt(seconds / 60, 10)
-    seconds %= 60
-    return `${hours ? `${hours}:` : ""}${minutes}:${seconds < 10 ? "0" : ""}${Math.floor(seconds)}`
-  }
+  import {mapState} from "vuex"
+  import {ts, getTime} from "../core"
 
   export default {
     name: "wolf-timer",
+    data: () => ({ms: 0}),
     mounted() {
-      this.ts = timesync.create({
-        server: `${endpointAlt}/timesync`,
-        interval: 10000
-      })
-      this.resetTimer()
-      this.startTimer()
-    },
-    methods: {
-      startTimer() {
-        this.ts.on("change", offset => console.log(`Clock Offset: ${offset}ms`))
-
-        setInterval(() => {
-          this.ms = this.ts.now() - this.initial
-        }, 1000)
-      },
-      resetTimer() {
-        this.initial = this.ts.now()
-      }
+      setInterval(() => {
+        this.ms = ts.now() - this.initial
+      }, 1000)
     },
     computed: {
-      time() {
-        return getTime(this.ms)
-      },
+      ...mapState({
+        duration: "timerDuration",
+        initial: "timerInitial",
+        night: "isNight"
+      }),
       down() {
-        if (this.ms < this.duration) {
-          return getTime(this.duration - this.ms)
-        }
-        return "Time's up!"
-      }
-    },
-    data: () => ({
-      duration: 15 * 1000,
-      initial: 0,
-      ms: 0
-    }),
-    feathers: {
-      game: {
-        patched() {
-
-        },
-        updated({room, type, payload}) {
-          if (type === "clock") {
-            this.duration = payload
-            this.resetTimer()
-          }
-          console.log({room, type, payload})
-        }
+        return (this.ms < this.duration) ?
+          getTime(this.duration - this.ms) : "0:00"
       }
     }
   }
@@ -75,4 +34,31 @@
 <style lang="scss" scoped>
   @import "../variables.scss";
 
+  .clock {
+    position: relative;
+    border-bottom: 2px solid $orange;
+
+    text-align: center;
+    padding: 1em 2em;
+  }
+
+  .day {
+    color: $orange !important;
+  }
+
+  .night {
+    border-bottom: 2px solid $grey;
+  }
+
+  .large {
+    font-size: 2.4em;
+    color: #888;
+  }
+
+  .sm {
+    margin-left: 0.5em;
+    font-size: 1.2em;
+    font-weight: 400;
+    color: #888;
+  }
 </style>

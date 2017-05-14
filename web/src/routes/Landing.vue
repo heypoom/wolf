@@ -19,14 +19,8 @@
 </template>
 
 <script>
-  import api from "../api"
+  import api from "../core/api"
   import Join from "../components/Join"
-
-  function enterGame(self) {
-    self.$store.commit("setName", self.playerName)
-    self.$store.commit("setRoles", {})
-    self.$store.commit("toggleWait", true)
-  }
 
   export default {
     name: "landing",
@@ -41,23 +35,14 @@
         this.vJoin = false
       },
       newGame() {
-        enterGame(this)
+        this.$store.commit("reset")
 
         api.service("room").create({name: this.playerName}).then(room => {
+          api.io.emit("room", room.id)
+          this.$store.commit("setName", this.playerName)
           this.$store.commit("toggleHost", true)
           this.$store.commit("updateRoom", room)
           this.$router.push(`/${room.id}`)
-        })
-      },
-      joinGame() {
-        enterGame(this)
-
-        api.service("room").patch(this.code, {name: this.playerName}).then(room => {
-          this.$store.commit("updateRoom", room)
-          this.$router.push(`/${this.code}`)
-        }).catch(err => {
-          console.error(err.message)
-          this.joinError = err.message
         })
       }
     },
@@ -93,7 +78,7 @@
     height: 6.5em;
     padding: 1em;
     background: white;
-    border: 2px solid $lightGreen;
+    border: 2px solid $primary;
     border-radius: 50%;
     margin-bottom: 2em;
     box-shadow: $zFlow;

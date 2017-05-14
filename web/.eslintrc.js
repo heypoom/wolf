@@ -40,6 +40,9 @@ module.exports = {
     "comma-dangle": ["warn", "never"],
     "object-curly-spacing": ["warn", "never"],
     "no-param-reassign": ["warn", {"props": false}],
-    "arrow-parens": ["warn", "as-needed"]
+    "arrow-parens": ["warn", "as-needed"],
+    "no-console": 0,
+    "no-alert": 0,
+    "no-param-reassign": 0
   }
 }

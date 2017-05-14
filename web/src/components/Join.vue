@@ -18,7 +18,7 @@
 </template>
 
 <script>
-  import api from "../api"
+  import api from "../core/api"
 
   export default {
     name: "wolf-join",
@@ -36,12 +36,16 @@
     methods: {
       join() {
         const code = this.front ? this.joinCode : this.code
+        this.$store.commit("reset")
 
+        api.io.emit("room", code)
         api.service("room").patch(code, {name: this.newName}).then(room => {
           this.$store.commit("setName", this.newName)
+          this.$store.commit("toggleHost", false)
           this.$store.commit("updateRoom", room)
+
           if (this.front) {
-            this.$router.push(`/${this.code}`)
+            this.$router.push(`/${this.joinCode}`)
           }
         }).catch(err => {
           console.error(err.message)
@@ -64,7 +68,7 @@
     height: 6em;
     padding: 1em;
     background: white;
-    border: 2px solid $lightGreen;
+    border: 2px solid $primary;
     border-radius: 50%;
     margin-bottom: 2em;
     box-shadow: $zFlow;
